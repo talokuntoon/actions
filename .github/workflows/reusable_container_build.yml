@@ -62,6 +62,17 @@ on:
 
 jobs:
 
+  # Check if we should skip the build
+  check-skip:
+    name: Check Skip
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check-skip.outputs.skip }}
+    steps:
+      - name: Check if we should skip the build
+        id: check-skip
+        run: echo "skip=${{ inputs.skip }}" >> $GITHUB_OUTPUT
+
   # Build and publish the project/application container image(s)
   build-image:
     name: Build & Publish Image
