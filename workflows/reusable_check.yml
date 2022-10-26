@@ -1,0 +1,103 @@
+name: Event Handler (Reusable)
+
+on:
+  # Specify the inputs for this reusable workflow
+  workflow_call:
+    outputs:
+      is_pr:
+        description: 'Is this a pull request?'
+        value: ${{ jobs.check-events.outputs.is_pr }}
+      is_preview:
+        description: 'Is this a preview build?'
+        value: ${{ jobs.check-events.outputs.is_preview }}
+      is_open:
+        description: 'Is this a pull request that is open?'
+        value: ${{ jobs.check-events.outputs.is_open }}
+      is_closed:
+        description: 'Is this a pull request that is closed?'
+        value: ${{ jobs.check-events.outputs.is_closed }}
+      label_added:
+        description: 'Was a label added to the pull request?'
+        value: ${{ jobs.check-events.outputs.label_added }}
+      label_removed:
+        description: 'Was a label removed from the pull request?'
+        value: ${{ jobs.check-events.outputs.label_removed }}
+      added_other_label:
+        description: 'Was a label added to the pull request that is not "preview"?'
+        value: ${{ jobs.check-events.outputs.added_other_label }}
+      added_preview_label:
+        description: 'Was the "preview" label added to the pull request?'
+        value: ${{ jobs.check-events.outputs.added_preview_label }}
+      removed_other_label:
+        description: 'Was a label removed from the pull request that is not "preview"?'
+        value: ${{ jobs.check-events.outputs.removed_other_label }}
+      removed_preview_label:
+        description: 'Was the "preview" label removed from the pull request?'
+        value: ${{ jobs.check-events.outputs.removed_preview_label }}
+      should_deploy_preview:
+        description: 'Should a preview deployment be created?'
+        value: ${{ jobs.process-events.outputs.should_deploy_preview }}
+      should_delete_preview:
+        description: 'Should a preview deployment be deleted?'
+        value: ${{ jobs.process-events.outputs.should_delete_preview }}
+
+jobs:
+
+  # Check things like if this is a Pull Request or whether the `preview` label has been added to the PR etc.
+  check-events:
+    name: Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      ## FIXME: Put all of this in a custom action instead, perhaps even in two separate jobs, to avoid boilerplate?
+      is_pr: ${{ github.event_name == 'pull_request' }}
+      is_preview: ${{ steps.check_label_preview.outputs.label_check == 'success' }}
+      is_open: ${{ github.event.action != 'closed' }}
+      is_closed: ${{ github.event.action == 'closed' }}
+      label_added: ${{ github.event.action == 'labeled' }}
+      label_removed: ${{ github.event.action == 'unlabeled' }}
+      added_other_label: ${{ github.event.action == 'labeled' && github.event.label.name != 'preview' }}
+      added_preview_label: ${{ github.event.action == 'labeled' && github.event.label.name == 'preview' }}
+      removed_other_label: ${{ github.event.action == 'unlabeled' && github.event.label.name != 'preview' }}
+      removed_preview_label: ${{ github.event.action == 'unlabeled' && github.event.label.name == 'preview' }}
+      # should_deploy_preview: ${{ github.event_name == 'pull_request' && steps.check_label_preview.outputs.label_check == 'success' && github.event.action != 'closed' }}
+      # should_delete_preview: ${{ github.event_name == 'pull_request' && steps.check_label_preview.outputs.label_check == 'success' && github.event.action == 'closed' }}
+    steps:
+      ## FIXME: set-output is deprecated
+      ## TODO: Fork, fix and PR the fix to upstream?
+      - name: Check for 'preview' label
+        id: check_label_preview
+        ## NOTE: We use the Docker image directly as it only takes ~2 seconds to run, compared to the ~40 seconds when using the action
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: preview
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          allow_failure: true
+
+  # Process the results of the checks above
+  process-events:
+    name: Process
+    needs: [ check-events ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should_deploy_preview: ${{ needs.check-events.outputs.is_pr == 'true' && needs.check-events.outputs.is_preview == 'true' && needs.check-events.outputs.is_open == 'true' && (needs.check-events.outputs.added_preview_label == 'true' || (needs.check-events.outputs.label_added != 'true' && needs.check-events.outputs.label_removed != 'true')) }}
+      should_delete_preview: ${{ needs.check-events.outputs.is_pr == 'true' && (needs.check-events.outputs.is_closed == 'true' || needs.check-events.outputs.removed_preview_label == 'true') }}
+    steps:
+      - name: Print Results
+        run: |
+
+          echo
+          echo "Check Events finished with results:"
+          echo "- is_pr: ${{ needs.check-events.outputs.is_pr }}"
+          echo "- is_preview: ${{ needs.check-events.outputs.is_preview }}"
+          echo "- is_open: ${{ needs.check-events.outputs.is_open }}"
+          echo "- is_closed: ${{ needs.check-events.outputs.is_closed }}"
+          echo "- label_added: ${{ needs.check-events.outputs.label_added }}"
+          echo "- label_removed: ${{ needs.check-events.outputs.label_removed }}"
+          echo "- added_other_label: ${{ needs.check-events.outputs.added_other_label }}"
+          echo "- added_preview_label: ${{ needs.check-events.outputs.added_preview_label }}"
+          echo "- removed_other_label: ${{ needs.check-events.outputs.removed_other_label }}"
+          echo "- removed_preview_label: ${{ needs.check-events.outputs.removed_preview_label }}"
+          echo "- should_deploy_preview: ${{ needs.check-events.outputs.is_pr == 'true' && needs.check-events.outputs.is_preview == 'true' && needs.check-events.outputs.is_open == 'true' && (needs.check-events.outputs.added_preview_label == 'true' || (needs.check-events.outputs.label_added != 'true' && needs.check-events.outputs.label_removed != 'true')) }}"
+          echo "- should_delete_preview: ${{ needs.check-events.outputs.is_pr == 'true' && (needs.check-events.outputs.is_closed == 'true' || needs.check-events.outputs.removed_preview_label == 'true') }}"
