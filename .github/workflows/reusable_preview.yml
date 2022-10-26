@@ -37,6 +37,17 @@ on:
 
 jobs:
 
+  ## TODO: Delete this when done!
+  print-inputs:
+    name: Print Inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Inputs
+        run: |
+
+          echo "deploy: ${{ inputs.deploy }}"
+          echo "delete: ${{ inputs.delete }}"
+
   # Create a dynamic Docker Compose file for Uffizzi
   render-compose-file:
     name: Render Compose File
