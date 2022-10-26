@@ -64,7 +64,7 @@ jobs:
 
   # Check if we should skip the build
   check-skip:
-    name: Check Skip
+    name: Skip Build
     runs-on: ubuntu-latest
     outputs:
       skip: ${{ steps.check-skip.outputs.skip }}

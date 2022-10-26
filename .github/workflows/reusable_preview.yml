@@ -115,6 +115,8 @@ jobs:
       pull-requests: write
       id-token: write
 
+  ## FIXME: !!! Deleting preview builds is currently broken when removing labels, !!!
+  ##        !!! because Uffizzi's shared workflow doesn't support this?!          !!!
   # Delete test environments from Uffizzi when a PR is closed (merged or not)
   delete-uffizzi-preview:
     name: Delete Preview
