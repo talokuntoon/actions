@@ -1,0 +1,32 @@
+name: Lock Workflow (Reusable)
+
+on:
+  # Specify the inputs for this reusable workflow
+  workflow_call:
+    inputs:
+      timeout:
+        description: 'Timeout in minutes (defaults to 120 minutes)'
+        required: false
+        type: number
+        default: 120 # Allow up to 2 hours, in case we have a lot of jobs queued
+
+jobs:
+
+  ##
+  ## FIXME: Node.js 12 actions are deprecated.
+  ##        For more information see:
+  ##        https://github.blog/changelog/2022-09-22-github-actions-all-actions-will-begin-running-on-node16-instead-of-node12/.
+  ##        Please update the following actions to use Node.js 16: mktcode/consecutive-workflow-action
+  ##
+  # This workflow is only allowed to run once at any given time
+  lock-workflow:
+    name: Lock Workflow
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout }}
+    permissions:
+      actions: read
+    steps:
+      - name: Lock Workflow
+        uses: mktcode/consecutive-workflow-action@7e955aee180a0e1a4e7d44c58eed3ff29abfbbad
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

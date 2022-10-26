@@ -1,0 +1,54 @@
+name: Container Cleanup (Reusable)
+
+on:
+  # Specify the inputs for this reusable workflow
+  workflow_call:
+    inputs:
+      images:
+        description: 'Comma separated list of images to clean up (defaults to repository name)'
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}
+      range:
+        description: 'Time range for images to be considered for deletion (defaults to "1 day ago UTC")'
+        required: false
+        type: string
+        default: 1 day ago UTC
+      keep:
+        description: 'Number of images to keep (defaults to 1)'
+        required: false
+        type: number
+        default: 1
+      skip:
+        description: 'Comma separated list of tags to skip (defaults to "latest")'
+        required: false
+        type: string
+        default: latest
+      filter:
+        description: 'Filter for images to be considered for deletion (eg. "sha-*", no default value)'
+        required: false
+        type: string
+
+jobs:
+
+  ## FIXME: This seems to build a docker image, but what if we used a pre-built image with "uses: docker://<image>:<tag>"?
+  ## TODO: Add the appropriate GitHub Actions permissions to this job!
+  # Cleanup container images
+  container-cleanup:
+    name: Run Container Cleanup
+    runs-on: ubuntu-latest
+    needs: [ lock ]
+    timeout-minutes: 5
+    steps:
+      # https://github.com/snok/container-retention-policy
+      - name: Container Registry Cleanup
+        uses: snok/container-retention-policy@v1
+        with:
+          image-names: ${{ inputs.images }}
+          cut-off: ${{ inputs.range }}
+          keep-at-least: ${{ inputs.keep }}
+          skip-tags: ${{ inputs.skip }}
+          filter-tags: ${{ inputs.filter }}
+          account-type: org
+          org-name: talokuntoon
+          token: ${{ secrets.GHCR_ACCESS_TOKEN }}

@@ -1,0 +1,125 @@
+name: Preview Build (Reusable)
+
+on:
+  # Specify the inputs for this reusable workflow
+  workflow_call:
+    inputs:
+      deploy:
+        description: 'Deploy the preview (defaults to "true")'
+        required: false
+        type: boolean
+        default: true
+      delete:
+        description: 'Delete the preview (defaults to "false")'
+        required: false
+        type: boolean
+        default: false
+      project:
+        description: 'Project name (defaults to repository name)'
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}
+      server:
+        description: 'Preview server URL (defaults to "https://app.uffizzi.com")'
+        required: false
+        type: string
+        default: https://app.uffizzi.com
+      registry:
+        description: 'Container registry to use (defaults to "ghcr.io")'
+        required: false
+        type: string
+        default: ghcr.io
+      images:
+        description: 'Comma separated list of image key values, used when rendering the compose file (defaults to "IMAGE=organization/repository:latest")'
+        required: false
+        type: string
+        default: IMAGE=${{ inputs.registry }}/${{ github.repository }}:latest
+
+jobs:
+
+  # Create a dynamic Docker Compose file for Uffizzi
+  render-compose-file:
+    name: Render Compose File
+    if: ${{ inputs.deploy }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      compose-file-cache-key: ${{ steps.hash.outputs.hash }}
+      compose-file-cache-path: docker-compose.rendered.yml
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Render Compose File
+        shell: bash
+        run: |
+
+          # Enable debug output
+          # set -x
+
+          ## FIXME: What about our default case, where we do NOT have any commas?!
+          # Export the comma separated list of image key values as environment variables
+          IMAGES="${{ inputs.images }}"
+          for i in ${IMAGES//,/ }
+          do
+            export $i
+          done
+
+          # Substitute environment variables while creating a new docker-compose file
+          envsubst < docker-compose.uffizzi.yml > docker-compose.rendered.yml
+          echo "Rendered Uffizzi compose file:"
+          cat docker-compose.rendered.yml
+          echo "::notice::Generated rendered Docker Compose file: $(cat docker-compose.rendered.yml)"
+
+      - name: Hash Rendered Compose File
+        id: hash
+        run: echo "hash=$(md5sum docker-compose.rendered.yml | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+
+      - name: Cache Rendered Compose File
+        uses: actions/cache@v3
+        with:
+          path: docker-compose.rendered.yml
+          key: ${{ steps.hash.outputs.hash }}
+
+  # Create and update test environments in Uffizzi when a PR is opened, updated etc.
+  deploy-uffizzi-preview:
+    name: Deploy Preview
+    if: ${{ inputs.deploy }}
+    needs: [ render-compose-file ]
+    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    with:
+      compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
+      compose-file-cache-path: ${{ needs.render-compose-file.outputs.compose-file-cache-path }}
+      server: ${{ inputs.server }}
+      project: ${{ inputs.project }}
+      ## FIXME: Can't use secrets here, only with "secrets:" below..
+      # username: ${{ secrets.UFFIZZI_USERNAME }}
+      username: pauli.jokela+tk@didstopia.com
+    secrets:
+      password: ${{ secrets.UFFIZZI_PASSWORD }}
+      personal-access-token: ${{ secrets.GHCR_ACCESS_TOKEN }}
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+
+  # Delete test environments from Uffizzi when a PR is closed (merged or not)
+  delete-uffizzi-preview:
+    name: Delete Preview
+    if: ${{ inputs.delete }}
+    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    with:
+      compose-file-cache-key: ''
+      compose-file-cache-path: docker-compose.rendered.yml
+      server: ${{ inputs.server }}
+      project: ${{ inputs.project }}
+      ## FIXME: Can't use secrets here, only with "secrets:" below..
+      # username: ${{ secrets.UFFIZZI_USERNAME }}
+      username: pauli.jokela+tk@didstopia.com
+    secrets:
+      password: ${{ secrets.UFFIZZI_PASSWORD }}
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
