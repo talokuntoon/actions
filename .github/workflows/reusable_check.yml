@@ -51,7 +51,7 @@ jobs:
     outputs:
       ## FIXME: Put all of this in a custom action instead, perhaps even in two separate jobs, to avoid boilerplate?
       is_pr: ${{ github.event_name == 'pull_request' }}
-      is_preview: ${{ steps.check_label_preview.outputs.label_check == 'success' }}
+      is_preview: ${{ steps.check_label_preview.outputs.label_check == 'success' || (github.event.action == 'labeled' && github.event.label.name == 'preview') }}
       is_open: ${{ github.event.action != 'closed' }}
       is_closed: ${{ github.event.action == 'closed' }}
       label_added: ${{ github.event.action == 'labeled' }}
