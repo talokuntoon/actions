@@ -5,10 +5,10 @@ on:
   workflow_call:
     inputs:
       deploy:
-        description: 'Deploy the preview (defaults to "true")'
+        description: 'Deploy the preview (defaults to "false")'
         required: false
         type: boolean
-        default: true
+        default: false
       delete:
         description: 'Delete the preview (defaults to "false")'
         required: false
