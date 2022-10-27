@@ -5,12 +5,12 @@ on:
   workflow_call:
     inputs:
       deploy:
-        description: 'Deploy the preview (defaults to "false")'
+        description: 'Deploy the preview (defaults to false)'
         required: false
         type: boolean
         default: false
       delete:
-        description: 'Delete the preview (defaults to "false")'
+        description: 'Delete the preview (defaults to false)'
         required: false
         type: boolean
         default: false
@@ -34,6 +34,11 @@ on:
         required: false
         type: string
         default: IMAGE=${{ inputs.registry }}/${{ github.repository }}:latest
+      notify:
+        description: 'Notify Slack of the build status (defaults to true)'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
 
@@ -125,7 +130,7 @@ jobs:
   ## TODO: Ideally refactor this, so it's more reusable and easier still customizable, as this is A LOT of copy-paste boilerplate at the moment..
   send-notification-deploy:
     name: Slack Notification
-    if: ${{ always() && (inputs.deploy || inputs.delete) }}
+    if: ${{ always() && (inputs.deploy || inputs.delete) && inputs.notify }}
     needs: [ deploy-uffizzi-preview, delete-uffizzi-preview ]
     runs-on: ubuntu-latest
     timeout-minutes: 5

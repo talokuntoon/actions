@@ -35,25 +35,25 @@ on:
         type: string
         default: linux/amd64,linux/arm64
       pull:
-        description: 'Always attempt to pull a newer version of the base image (defaults to "false")'
+        description: 'Always attempt to pull a newer version of the base image (defaults to false)'
         required: false
         type: boolean
         default: false
       push:
-        description: 'Push the image to the registry (defaults to "false")'
+        description: 'Push the image to the registry (defaults to false)'
         required: false
         type: boolean
         default: false
       skip:
-        description: 'Skip the build (defaults to "false")'
+        description: 'Skip the build (defaults to false)'
         required: false
         type: boolean
         default: false
       notify:
-        description: 'Whether to notify Slack of the build status (defaults to "false")'
+        description: 'Notify Slack of the build status (defaults to true)'
         required: false
         type: boolean
-        default: false
+        default: true
     outputs:
       tag:
         description: 'The generated tag for the built image'
