@@ -28,10 +28,10 @@ on:
       ##        but we ALSO need to somehow feed this as an array, however inputs don't support arrays?!
       ## TODO: We can utilize toJSON() and fromJSON() to do this with strings, eg. "['foo', 'bar']"
       build-args:
-        description: 'An array string of build arguments (defaults to "[ BUILDKIT_INLINE_CACHE=1 ]", automatically converted to a JSON array)'
+        description: 'An array string of build arguments (defaults to "[ "BUILDKIT_INLINE_CACHE=1" ]", automatically converted to a JSON array)'
         required: false
         type: string
-        default: '[ BUILDKIT_INLINE_CACHE=1 ]'
+        default: '[ "BUILDKIT_INLINE_CACHE=1" ]'
       platforms:
         description: 'Comma separated list of platforms to build for (defaults to "linux/amd64,linux/arm64")'
         required: false
