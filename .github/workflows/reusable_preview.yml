@@ -123,6 +123,9 @@ jobs:
   ## TODO: Ideally refactor this, so it's more reusable and easier still customizable, as this is A LOT of copy-paste boilerplate at the moment..
   send-notification-deploy:
     name: Slack Notification
+    ## FIXME: We want this to always run when the deploy or delete inputs are set to true,
+    ##        regardless of if the deploy or delete steps actually ran or not, and successfully or not
+    if: ${{ always() && (inputs.deploy || inputs.delete) }}
     needs: [ deploy-uffizzi-preview, delete-uffizzi-preview ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
