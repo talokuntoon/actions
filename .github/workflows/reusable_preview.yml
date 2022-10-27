@@ -135,7 +135,7 @@ jobs:
 
       - name: Deploy Success
         if: ${{ always() && needs.deploy-uffizzi-preview.result == 'success' }}
-        uses: slackapi/slack-github-action@v1.22.0
+        uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
@@ -209,7 +209,7 @@ jobs:
 
       - name: Deploy Failure
         if: ${{ always() && needs.deploy-uffizzi-preview.result == 'failure' }}
-        uses: slackapi/slack-github-action@v1.22.0
+        uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
@@ -270,7 +270,7 @@ jobs:
 
       - name: Delete Success
         if: ${{ always() && needs.delete-uffizzi-preview.result == 'success' }}
-        uses: slackapi/slack-github-action@v1.22.0
+        uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
@@ -329,7 +329,7 @@ jobs:
 
       - name: Deploy Failure
         if: ${{ always() && needs.delete-uffizzi-preview.result == 'failure' }}
-        uses: slackapi/slack-github-action@v1.22.0
+        uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
