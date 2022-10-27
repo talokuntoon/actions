@@ -83,8 +83,8 @@ jobs:
     name: Deploy Preview
     if: ${{ inputs.deploy }}
     needs: [ render-compose-file ]
-    # uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
-    uses: Dids/preview-action/.github/workflows/reusable.yaml@master
+    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    # uses: Dids/preview-action/.github/workflows/reusable.yaml@master
     with:
       compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
       compose-file-cache-path: ${{ needs.render-compose-file.outputs.compose-file-cache-path }}
@@ -105,8 +105,8 @@ jobs:
   delete-uffizzi-preview:
     name: Delete Preview
     if: ${{ inputs.delete }}
-    # uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
-    uses: Dids/preview-action/.github/workflows/reusable.yaml@master
+    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    # uses: Dids/preview-action/.github/workflows/reusable.yaml@master
     with:
       compose-file-cache-key: ''
       compose-file-cache-path: docker-compose.rendered.yml
@@ -167,7 +167,7 @@ jobs:
                                     },
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri }}|Link>"
+                                        "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri || 'https://app.uffizzi.com' }}|Link>"
                                     }
                                 ]
                             },
