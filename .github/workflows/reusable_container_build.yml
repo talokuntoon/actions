@@ -232,9 +232,8 @@ jobs:
               ]
             }
         env:
-          ## TODO: Switch back from the #debug channel to the #status channel when done testing
-          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Publish Failure
@@ -288,7 +287,6 @@ jobs:
               ]
             }
         env:
-          ## TODO: Switch back from the #debug channel to the #status channel when done testing
-          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
