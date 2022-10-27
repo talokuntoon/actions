@@ -84,7 +84,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       should_deploy_preview: ${{ needs.check-events.outputs.is_pr == 'true' && needs.check-events.outputs.is_preview == 'true' && needs.check-events.outputs.is_open == 'true' && (needs.check-events.outputs.added_preview_label == 'true' || (needs.check-events.outputs.label_added != 'true' && needs.check-events.outputs.label_removed != 'true')) }}
-      should_delete_preview: ${{ needs.check-events.outputs.is_pr == 'true' && (needs.check-events.outputs.is_closed == 'true' || needs.check-events.outputs.removed_preview_label == 'true') }}
+      should_delete_preview: ${{ needs.check-events.outputs.is_pr == 'true' && ((needs.check-events.outputs.is_closed == 'true' && needs.check-events.outputs.is_preview) || needs.check-events.outputs.removed_preview_label == 'true') }}
     steps:
       - name: Print Results
         run: |
