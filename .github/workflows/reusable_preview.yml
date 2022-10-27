@@ -327,7 +327,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-      - name: Deploy Failure
+      - name: Delete Failure
         if: ${{ always() && needs.delete-uffizzi-preview.result == 'failure' }}
         uses: slackapi/slack-github-action@v1.23.0
         with:
