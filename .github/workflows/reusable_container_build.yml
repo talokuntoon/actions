@@ -203,7 +203,7 @@ jobs:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Successfully* published `${{ inputs.registry }}/${{ inputs.image }}:${{ needs.build-image.outputs.tag }}` from <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>."
+                                "text": "*Successfully* published `${{ inputs.registry }}/${{ inputs.image }}:${{ needs.build-image.outputs.tag }}`."
                             }
                         },
                         {
@@ -259,7 +259,7 @@ jobs:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Failed* to publish `${{ inputs.registry }}/${{ inputs.image }}:${{ needs.build-image.outputs.tag }}` from <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>!"
+                                "text": "*Failed* to publish `${{ inputs.registry }}/${{ inputs.image }}:${{ needs.build-image.outputs.tag }}`!"
                             }
                         },
                         {
