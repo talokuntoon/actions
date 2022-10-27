@@ -155,7 +155,7 @@ jobs:
                                 "type": "section",
                                 "text": {
                                     "type": "mrkdwn",
-                                    "text": "*Successfully* _deployed_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>."
+                                    "text": "*Successfully* deployed a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>."
                                 }
                             },
                             {
@@ -184,7 +184,7 @@ jobs:
                                     },
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                        "text": "*Build Event:*\n`${{ github.event.action }}`"
                                     },
                                     {
                                         "type": "mrkdwn",
@@ -224,7 +224,7 @@ jobs:
                                 "type": "section",
                                 "text": {
                                     "type": "mrkdwn",
-                                    "text": "*Failed* to _deploy_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>!"
+                                    "text": "*Failed* to deploy a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>!"
                                 }
                             },
                             {
@@ -240,7 +240,7 @@ jobs:
                                     },
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                        "text": "*Build Event:*\n`${{ github.event.action }}`"
                                     },
                                     {
                                         "type": "mrkdwn",
@@ -282,7 +282,7 @@ jobs:
                                 "type": "section",
                                 "text": {
                                     "type": "mrkdwn",
-                                    "text": "*Successfully* _deleted_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>."
+                                    "text": "*Successfully* deleted a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>."
                                 }
                             },
                             {
@@ -298,7 +298,7 @@ jobs:
                                     },
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                        "text": "*Build Event:*\n`${{ github.event.action }}`"
                                     },
                                     {
                                         "type": "mrkdwn",
@@ -338,7 +338,7 @@ jobs:
                                 "type": "section",
                                 "text": {
                                     "type": "mrkdwn",
-                                    "text": "*Failed* to _delete_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>!"
+                                    "text": "*Failed* to delete a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>!"
                                 }
                             },
                             {
@@ -354,7 +354,7 @@ jobs:
                                     },
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                        "text": "*Build Event:*\n`${{ github.event.action }}`"
                                     },
                                     {
                                         "type": "mrkdwn",

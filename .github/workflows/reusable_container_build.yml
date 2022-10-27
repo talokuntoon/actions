@@ -219,7 +219,7 @@ jobs:
                                 },
                                 {
                                     "type": "mrkdwn",
-                                    "text": "*Build Action:*\n${{ github.event.action }}"
+                                    "text": "*Build Event:*\n`${{ github.event.action }}`"
                                 },
                                 {
                                     "type": "mrkdwn",
@@ -275,7 +275,7 @@ jobs:
                                 },
                                 {
                                     "type": "mrkdwn",
-                                    "text": "*Build Action:*\n${{ github.event.action }}"
+                                    "text": "*Build Event:*\n`${{ github.event.action }}`"
                                 },
                                 {
                                     "type": "mrkdwn",
