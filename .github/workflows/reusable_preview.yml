@@ -83,7 +83,8 @@ jobs:
     name: Deploy Preview
     if: ${{ inputs.deploy }}
     needs: [ render-compose-file ]
-    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    # uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    uses: Dids/preview-action/.github/workflows/reusable.yaml@master
     with:
       compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
       compose-file-cache-path: ${{ needs.render-compose-file.outputs.compose-file-cache-path }}
@@ -104,7 +105,8 @@ jobs:
   delete-uffizzi-preview:
     name: Delete Preview
     if: ${{ inputs.delete }}
-    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    # uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.5.0
+    uses: Dids/preview-action/.github/workflows/reusable.yaml@master
     with:
       compose-file-cache-key: ''
       compose-file-cache-path: docker-compose.rendered.yml
@@ -123,8 +125,6 @@ jobs:
   ## TODO: Ideally refactor this, so it's more reusable and easier still customizable, as this is A LOT of copy-paste boilerplate at the moment..
   send-notification-deploy:
     name: Slack Notification
-    ## FIXME: We want this to always run when the deploy or delete inputs are set to true,
-    ##        regardless of if the deploy or delete steps actually ran or not, and successfully or not
     if: ${{ always() && (inputs.deploy || inputs.delete) }}
     needs: [ deploy-uffizzi-preview, delete-uffizzi-preview ]
     runs-on: ubuntu-latest
@@ -167,7 +167,7 @@ jobs:
                                     },
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri }}|View>"
+                                        "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri }}|Link>"
                                     }
                                 ]
                             },
@@ -191,9 +191,6 @@ jobs:
                                         "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
                                     }
                                 ]
-                            },
-                            {
-                                "type": "divider"
                             }
                         ]
                     }
@@ -204,8 +201,6 @@ jobs:
           # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-      ## TODO: Apply the template from above to all of the ones below, where applicable, and note any and all variable changes!
 
       - name: Deploy Failure
         if: ${{ always() && needs.deploy-uffizzi-preview.result == 'failure' }}
@@ -252,9 +247,6 @@ jobs:
                                         "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
                                     }
                                 ]
-                            },
-                            {
-                                "type": "divider"
                             }
                         ]
                     }
@@ -313,9 +305,6 @@ jobs:
                                         "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
                                     }
                                 ]
-                            },
-                            {
-                                "type": "divider"
                             }
                         ]
                     }
@@ -372,9 +361,6 @@ jobs:
                                         "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
                                     }
                                 ]
-                            },
-                            {
-                                "type": "divider"
                             }
                         ]
                     }
