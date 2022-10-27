@@ -20,18 +20,15 @@ on:
         type: string
         default: Dockerfile
       context:
-        description: 'Context for the Docker build (defaults to ".")'
+        description: 'Context for Docker build (defaults to ".")'
         required: false
         type: string
         default: .
-      ## FIXME: We not only need to get this injected to the build-args with every single build,
-      ##        but we ALSO need to somehow feed this as an array, however inputs don't support arrays?!
-      ## TODO: We can utilize toJSON() and fromJSON() to do this with strings, eg. "['foo', 'bar']"
       build-args:
-        description: 'An array string of build arguments (defaults to "[ "BUILDKIT_INLINE_CACHE=1" ]", automatically converted to a JSON array)'
+        description: 'A multi-line string of key-value build arguments in "KEY=VALUE" format to pass to Docker build (defaults to an empty string)'
         required: false
         type: string
-        default: '[ "BUILDKIT_INLINE_CACHE=1" ]'
+        default: ''
       platforms:
         description: 'Comma separated list of platforms to build for (defaults to "linux/amd64,linux/arm64")'
         required: false
@@ -156,7 +153,11 @@ jobs:
         with:
           file: ${{ inputs.dockerfile }}
           context: ${{ inputs.context }}
-          build-args: ${{ fromJSON(inputs.build-args) }}
+          # build-args: ${{ fromJSON(inputs.build-args) }}
+          # build-args: ${{ inputs.build-args }}
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+            ${{ inputs.build-args }}
           platforms: ${{ inputs.platforms }}
           pull: ${{ inputs.pull }}
           push: ${{ inputs.push }}
