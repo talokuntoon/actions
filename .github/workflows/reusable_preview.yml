@@ -119,3 +119,266 @@ jobs:
       contents: read
       pull-requests: write
       id-token: write
+
+  ## TODO: Ideally refactor this, so it's more reusable and easier still customizable, as this is A LOT of copy-paste boilerplate at the moment..
+  send-notification-deploy:
+    name: Slack Notification
+    needs: [ deploy-uffizzi-preview, delete-uffizzi-preview ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+
+      # DEPLOYMENT
+
+      - name: Deploy Success
+        if: ${{ always() && needs.deploy-uffizzi-preview.result == 'success' }}
+        uses: slackapi/slack-github-action@v1.22.0
+        with:
+          payload: |
+            {
+                "attachments": [
+                    {
+                        "color": "#1eb80d",
+                        "blocks": [
+                            {
+                                "type": "header",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": ":white_check_mark:  Preview Build: Deploy",
+                                    "emoji": true
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": "*Successfully* _deployed_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>."
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Preview Link:*\n<${{ needs.deploy-uffizzi-preview.outputs.url }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri }}|View>"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Repository:*\n<https://github.com/${{ github.repository }}|${{ github.repository }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Reference:*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|${{ github.event.pull_request.title || github.event.number || github.ref_name }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "divider"
+                            }
+                        ]
+                    }
+                ]
+            }
+        env:
+          ## TODO: Switch back from the #debug channel to the #status channel when done testing
+          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      ## TODO: Apply the template from above to all of the ones below, where applicable, and note any and all variable changes!
+
+      - name: Deploy Failure
+        if: ${{ always() && needs.deploy-uffizzi-preview.result == 'failure' }}
+        uses: slackapi/slack-github-action@v1.22.0
+        with:
+          payload: |
+            {
+                "attachments": [
+                    {
+                        "color": "#de0d0d",
+                        "blocks": [
+                            {
+                                "type": "header",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": ":x:  Preview Build: Deploy",
+                                    "emoji": true
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": "*Failed* to _deploy_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>!"
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Repository:*\n<https://github.com/${{ github.repository }}|${{ github.repository }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Reference:*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|${{ github.event.pull_request.title || github.event.number || github.ref_name }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "divider"
+                            }
+                        ]
+                    }
+                ]
+            }
+        env:
+          ## TODO: Switch back from the #debug channel to the #status channel when done testing
+          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      # DELETION
+
+      - name: Delete Success
+        if: ${{ always() && needs.delete-uffizzi-preview.result == 'success' }}
+        uses: slackapi/slack-github-action@v1.22.0
+        with:
+          payload: |
+            {
+                "attachments": [
+                    {
+                        "color": "#1eb80d",
+                        "blocks": [
+                            {
+                                "type": "header",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": ":white_check_mark:  Preview Build: Delete",
+                                    "emoji": true
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": "*Successfully* _deleted_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>."
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Repository:*\n<https://github.com/${{ github.repository }}|${{ github.repository }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Reference:*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|${{ github.event.pull_request.title || github.event.number || github.ref_name }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "divider"
+                            }
+                        ]
+                    }
+                ]
+            }
+        env:
+          ## TODO: Switch back from the #debug channel to the #status channel when done testing
+          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Deploy Failure
+        if: ${{ always() && needs.delete-uffizzi-preview.result == 'failure' }}
+        uses: slackapi/slack-github-action@v1.22.0
+        with:
+          payload: |
+            {
+                "attachments": [
+                    {
+                        "color": "#de0d0d",
+                        "blocks": [
+                            {
+                                "type": "header",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": ":x:  Preview Build: Delete",
+                                    "emoji": true
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": "*Failed* to _delete_ a preview build for <https://github.com/${{ github.repository }}|${{ github.event.repository.name }}>!"
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Repository:*\n<https://github.com/${{ github.repository }}|${{ github.repository }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Reference:*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|${{ github.event.pull_request.title || github.event.number || github.ref_name }}>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Action:*\n${{ github.event.action }}"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Build Log:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Link>"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "divider"
+                            }
+                        ]
+                    }
+                ]
+            }
+        env:
+          ## TODO: Switch back from the #debug channel to the #status channel when done testing
+          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEBUG }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
