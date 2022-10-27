@@ -43,6 +43,8 @@ on:
 
 jobs:
 
+  ## TODO: Rewrite this to make it more readable, simplifying the logic, states and checks!
+
   # Check things like if this is a Pull Request or whether the `preview` label has been added to the PR etc.
   check-events:
     name: Check

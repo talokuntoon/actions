@@ -37,17 +37,6 @@ on:
 
 jobs:
 
-  ## TODO: Delete this when done!
-  print-inputs:
-    name: Print Inputs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Inputs
-        run: |
-
-          echo "deploy: ${{ inputs.deploy }}"
-          echo "delete: ${{ inputs.delete }}"
-
   # Create a dynamic Docker Compose file for Uffizzi
   render-compose-file:
     name: Render Compose File
@@ -66,10 +55,6 @@ jobs:
         shell: bash
         run: |
 
-          # Enable debug output
-          # set -x
-
-          ## FIXME: What about our default case, where we do NOT have any commas?!
           # Export the comma separated list of image key values as environment variables
           IMAGES="${{ inputs.images }}"
           for i in ${IMAGES//,/ }
@@ -115,8 +100,6 @@ jobs:
       pull-requests: write
       id-token: write
 
-  ## FIXME: !!! Deleting preview builds is currently broken when removing labels, !!!
-  ##        !!! because Uffizzi's shared workflow doesn't support this?!          !!!
   # Delete test environments from Uffizzi when a PR is closed (merged or not)
   delete-uffizzi-preview:
     name: Delete Preview

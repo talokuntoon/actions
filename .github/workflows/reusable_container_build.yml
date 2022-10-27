@@ -28,10 +28,10 @@ on:
       ##        but we ALSO need to somehow feed this as an array, however inputs don't support arrays?!
       ## TODO: We can utilize toJSON() and fromJSON() to do this with strings, eg. "['foo', 'bar']"
       build-args:
-        description: 'Comma separated list of build arguments (defaults to "BUILDKIT_INLINE_CACHE=1")'
+        description: 'An array string of build arguments (defaults to "[ BUILDKIT_INLINE_CACHE=1 ]", automatically converted to a JSON array)'
         required: false
         type: string
-        default: BUILDKIT_INLINE_CACHE=1
+        default: '[ BUILDKIT_INLINE_CACHE=1 ]'
       platforms:
         description: 'Comma separated list of platforms to build for (defaults to "linux/amd64,linux/arm64")'
         required: false
@@ -129,7 +129,7 @@ jobs:
           password: ${{ secrets.GHCR_ACCESS_TOKEN }}
 
       ##
-      ## TODO: No longer needed when using "BUILDKIT_INLINE_CACHE=1" build arguments!?
+      ## TODO: No longer needed when using "BUILDKIT_INLINE_CACHE=1" build arguments?
       ##       https://testdriven.io/blog/faster-ci-builds-with-docker-cache/
       ##
       # Pull the latest image (if any) to speed up the build process
@@ -156,9 +156,9 @@ jobs:
         with:
           file: ${{ inputs.dockerfile }}
           context: ${{ inputs.context }}
-          build-args: ${{ inputs.build-args }}
+          build-args: ${{ fromJSON(inputs.build-args) }}
           platforms: ${{ inputs.platforms }}
-          pull: ${{ inputs.pull }} ## TODO: Do we really even need this? Especially with the buildkit/buildx stuff?!
+          pull: ${{ inputs.pull }}
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

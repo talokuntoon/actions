@@ -31,7 +31,7 @@ on:
 
 jobs:
 
-  ## FIXME: This seems to build a docker image, but what if we used a pre-built image with "uses: docker://<image>:<tag>"?
+  ## FIXME: This is slow because it builds the docker image, so we should use a pre-built image with "uses: docker://<image>:<tag>"
   ## TODO: Add the appropriate GitHub Actions permissions to this job!
   # Cleanup container images
   container-cleanup:
