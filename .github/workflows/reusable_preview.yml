@@ -168,11 +168,15 @@ jobs:
                                 "fields": [
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Preview Link:*\n<${{ needs.deploy-uffizzi-preview.outputs.url }}>"
+                                        "text": "*Preview Link:*\n<${{ needs.deploy-uffizzi-preview.outputs.url || 'https://app.uffizzi.com' }}>"
                                     },
                                     {
                                         "type": "mrkdwn",
                                         "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri || 'https://app.uffizzi.com' }}|Link>"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Preview Expires:*\n${{ needs.deploy-uffizzi-preview.outputs.expiration_timestamp && '<!date^' }}${{ needs.deploy-uffizzi-preview.outputs.expiration_timestamp || 'Never' }}${{ needs.deploy-uffizzi-preview.outputs.expiration_timestamp && '^{date_pretty} at {time}|Unknown>' }}"
                                     }
                                 ]
                             },

@@ -215,11 +215,11 @@ jobs:
                                 },
                                 {
                                     "type": "mrkdwn",
-                                    "text": "*Reference:*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|${{ github.event.pull_request.title || github.event.number || github.ref_name }}>"
+                                    "text": "*Reference:*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url || '#' }}|${{ github.event.pull_request.title || github.event.number || github.ref_name || '-' }}>"
                                 },
                                 {
                                     "type": "mrkdwn",
-                                    "text": "*Build Event:*\n`${{ github.event.action }}`"
+                                    "text": "*Build Event:*\n`${{ github.event.action || '-' }}`"
                                 },
                                 {
                                     "type": "mrkdwn",
