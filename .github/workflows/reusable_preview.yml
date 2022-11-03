@@ -88,7 +88,7 @@ jobs:
     name: Deploy Preview
     if: ${{ inputs.deploy }}
     needs: [ render-compose-file ]
-    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.6.0
+    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.6.1
     # uses: Dids/preview-action/.github/workflows/reusable.yaml@master
     with:
       compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
@@ -110,7 +110,7 @@ jobs:
   delete-uffizzi-preview:
     name: Delete Preview
     if: ${{ inputs.delete }}
-    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.6.0
+    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2.6.1
     # uses: Dids/preview-action/.github/workflows/reusable.yaml@master
     with:
       compose-file-cache-key: ''
