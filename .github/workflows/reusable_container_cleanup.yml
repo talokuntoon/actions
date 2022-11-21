@@ -41,7 +41,8 @@ jobs:
     steps:
       # https://github.com/snok/container-retention-policy
       - name: Container Registry Cleanup
-        uses: snok/container-retention-policy@v1
+        # uses: snok/container-retention-policy@v1
+        uses: snok/container-retention-policy@master
         with:
           image-names: ${{ inputs.images }}
           cut-off: ${{ inputs.range }}
