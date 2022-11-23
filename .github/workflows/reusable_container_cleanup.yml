@@ -10,10 +10,10 @@ on:
         type: string
         default: ${{ github.event.repository.name }}
       range:
-        description: 'Time range for images to be considered for deletion (defaults to "1 day ago UTC")'
+        description: 'Time range for images to be considered for deletion (defaults to "30 days ago UTC")'
         required: false
         type: string
-        default: 1 day ago UTC
+        default: 30 days ago UTC
       keep:
         description: 'Number of images to keep (defaults to 1)'
         required: false
