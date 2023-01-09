@@ -20,10 +20,12 @@ on:
         type: string
         default: ${{ github.event.repository.name }}
       server:
-        description: 'Preview server URL (defaults to "https://app.uffizzi.com")'
+        # description: 'Preview server URL (defaults to "https://app.uffizzi.com")'
+        description: 'Preview server URL (defaults to "https://preview.didstopia.cloud")'
         required: false
         type: string
-        default: https://app.uffizzi.com
+        # default: https://app.uffizzi.com
+        default: https://preview.didstopia.cloud
       registry:
         description: 'Container registry to use (defaults to "ghcr.io")'
         required: false
@@ -168,11 +170,11 @@ jobs:
                                 "fields": [
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Preview Link:*\n<${{ needs.deploy-uffizzi-preview.outputs.url || 'https://app.uffizzi.com' }}>"
+                                        "text": "*Preview Link:*\n<${{ needs.deploy-uffizzi-preview.outputs.url || 'https://preview.didstopia.cloud' }}>"
                                     },
                                     {
                                         "type": "mrkdwn",
-                                        "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri || 'https://app.uffizzi.com' }}|Link>"
+                                        "text": "*Preview Details:*\n<${{ needs.deploy-uffizzi-preview.outputs.containers_uri || 'https://preview.didstopia.cloud' }}|Link>"
                                     },
                                     {
                                         "type": "mrkdwn",
